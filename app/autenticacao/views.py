@@ -2,7 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponse
 import json
 from .models import Pessoa,Cargos
-
+from django.shortcuts import get_list_or_404
+from django.http import Http404
 
 def cadastro(request):
     if request.method == 'GET':
@@ -20,12 +21,18 @@ def cadastro(request):
     
 def listar(request):
     
-    cargo_2 = Cargos.objects.get(id = 2)
 
-    pessoa = Pessoa.objects.get(id = 6)
-    pessoa.cargos.add(cargo_2)
-    pessoa.save()
+    cargo = Cargos.objects.filter(pessoa__pk = 6)
+
+    print(cargo)
 
     pessoas = Pessoa.objects.all()
 
     return render(request, 'listar/listar.html', {'pessoas': pessoas})
+
+def listar_unico(request, id):
+    
+   pessoa = get_list_or_404(Pessoa,  id = id)
+
+
+   return render(request, 'listar/listar.html', {'pessoas' : pessoa})
